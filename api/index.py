@@ -20,15 +20,7 @@ def form():
 def base64_decode():
     return render_template('decoder.html')
 
-@app.route('/write-image', methods=['POST'])
-def write_image():
-    data = request.data
-    json_data = json.loads(data)  # Parse JSON data
-    heading = json_data.get('heading', '')
-    subheading = json_data.get('subheading', '')
-    text = json_data.get('text', '')
-    encoding = json_data.get('encoding', 'binary')  # Check for encoding parameter
-
+def process_image(heading, subheading, text, encoding):
     # Select a random image from the base-images folder
     image_files = [f for f in os.listdir('base-images') if f.endswith(('.jpg', '.jpeg', '.png'))]
     selected_image = random.choice(image_files)
@@ -37,8 +29,6 @@ def write_image():
     # Open the image and prepare to draw on it
     image = Image.open(image_path)
     draw = ImageDraw.Draw(image)
-
-    # Define font (you may need to specify a path to a .ttf file)
 
     # Draw the text on the image
     draw.text((25, 300), heading, fill="white", font=ImageFont.load_default(67))
@@ -53,12 +43,31 @@ def write_image():
     if encoding == 'base64':
         # Convert the image to base64 string with utf-8 encoding
         buffer.seek(0)
-        base64_image = base64.b64encode(buffer.read()).decode('utf-8')
-        return base64_image
+        return base64.b64encode(buffer.read()).decode('utf-8')
     else:
         # Send the image as a binary response directly from the buffer
         buffer.seek(0)
         return send_file(buffer, mimetype='image/png')
+
+@app.route('/write-image', methods=['POST'])
+def write_image():
+    data = request.data
+    json_data = json.loads(data)  # Parse JSON data
+    heading = json_data.get('heading', '')
+    subheading = json_data.get('subheading', '')
+    text = json_data.get('text', '')
+    encoding = json_data.get('encoding', 'binary')  # Check for encoding parameter
+
+    return process_image(heading, subheading, text, encoding)
+
+@app.route('/write-image-via-query', methods=['GET'])
+def write_image_via_query():
+    heading = request.args.get('heading', '')
+    subheading = request.args.get('subheading', '')
+    text = request.args.get('text', '')
+    encoding = request.args.get('encoding', 'binary')  # Check for encoding parameter
+
+    return process_image(heading, subheading, text, encoding)
 
 if __name__ == '__main__':
     app.run(debug=True)
