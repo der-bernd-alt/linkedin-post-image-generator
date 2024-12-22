@@ -31,9 +31,9 @@ def process_image(heading, subheading, text, encoding):
     draw = ImageDraw.Draw(image)
 
     # Draw the text on the image
-    draw.text((25, 300), heading, fill="white", font=ImageFont.load_default(67))
-    draw.text((30, 500), subheading, fill="white", font=ImageFont.load_default(48))
-    draw.text((30, 750), text, fill="white", font=ImageFont.load_default(35))
+    draw.text((35, 300), heading, fill="white", font=ImageFont.load_default(130))
+    draw.text((45, 500), subheading, fill="white", font=ImageFont.load_default(70))
+    draw.text((55, 750), text, fill="white", font=ImageFont.load_default(50))
 
     # Save the modified image to a BytesIO buffer
     from io import BytesIO
