@@ -16,7 +16,7 @@ def home():
 def form():
     return render_template('form.html')
 
-@app.route('/base64-decode', methods=['GET'])
+@app.route('/base64-decoder', methods=['GET'])
 def base64_decode():
     return render_template('decoder.html')
 
