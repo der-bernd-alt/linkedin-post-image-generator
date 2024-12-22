@@ -31,9 +31,9 @@ def write_image():
     # Define font (you may need to specify a path to a .ttf file)
 
     # Draw the text on the image
-    draw.text((25, 300), heading, fill="white", font=ImageFont.truetype('arial.ttf', 67))
-    draw.text((30, 500), subheading, fill="white", font=ImageFont.truetype('arial.ttf', 48))
-    draw.text((75, 750), text, fill="white", font=ImageFont.truetype('arial.ttf', 35))
+    draw.text((25, 300), heading, fill="white", font=ImageFont.load_default())
+    draw.text((30, 500), subheading, fill="white", font=ImageFont.load_default())
+    draw.text((75, 750), text, fill="white", font=ImageFont.load_default())
 
     # Save the modified image to a temporary file
     output_path = os.path.join('output', 'output_image.png')
