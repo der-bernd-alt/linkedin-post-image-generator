@@ -36,19 +36,23 @@ def process_image(heading, subheading, text: list[str], encoding):
         (0.1, 0.8)   # text
     ]
     font_sizes = [80, 60, 50]
-    for i, (text, position, font_size) in enumerate(zip([heading, subheading, text], text_positions, font_sizes)):
+    # Load the custom font that supports local letters
+    custom_font_path = 'font/Roboto-Regular.ttf'  # Path to your font file
+    fonts = [ImageFont.truetype(custom_font_path, size) for size in font_sizes]
+
+    for i, (text, position, font) in enumerate(zip([heading, subheading, text], text_positions, fonts)):
         x, y = position
 
         text_color = "white"
-        if i==1:
+        if i == 1:
             text_color = "lightgray"
 
-        if i==2:
+        if i == 2:
             for part in text:
-                draw.text((x * image.width, y * image.height), part, fill=text_color, font=ImageFont.load_default(font_size))
+                draw.text((x * image.width, y * image.height), part, fill=text_color, font=font)
                 y += 0.05
         else:
-            draw.text((x * image.width, y * image.height), text, fill=text_color, font=ImageFont.load_default(font_size))
+            draw.text((x * image.width, y * image.height), text, fill=text_color, font=font)
 
     # Save the modified image to a BytesIO buffer
     from io import BytesIO
@@ -77,7 +81,7 @@ def write_image():
 
 @app.route('/write-image-via-query', methods=['GET'])
 def write_image_via_query():
-    MAX_TEXT_LENGTH = 45
+    MAX_LINE_LENGTH = 45
     
     heading = request.args.get('heading', '')
     subheading = request.args.get('subheading', '')
@@ -85,7 +89,7 @@ def write_image_via_query():
     lines = []
     current_line = ""
     for word in text.split():
-        if len(current_line) + len(word) + 1 <= MAX_TEXT_LENGTH:
+        if len(current_line) + len(word) + 1 <= MAX_LINE_LENGTH:
             if current_line:
                 current_line += " " + word
             else:
